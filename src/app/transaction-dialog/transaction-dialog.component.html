@@ -1,0 +1,91 @@
+<div class="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-center justify-center p-4 z-50" (click)="close.emit()">
+  <div class="bg-white rounded-xl shadow-2xl w-full max-w-md overflow-hidden" (click)="$event.stopPropagation()">
+    <!-- Header -->
+    <div class="px-6 py-4 border-b flex justify-between items-center bg-gray-50">
+      <h2 class="text-xl font-bold text-gray-800">{{ expense ? 'Edit' : 'Add' }} Transaction</h2>
+      <button (click)="close.emit()" class="text-gray-400 hover:text-gray-600">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor" class="w-6 h-6">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+        </svg>
+      </button>
+    </div>
+
+    <!-- Form -->
+    <form [formGroup]="form" (ngSubmit)="onSubmit()" class="p-6 space-y-4">
+      
+      <!-- Type Toggle -->
+      <div class="flex rounded-lg overflow-hidden border border-gray-200">
+        <label class="flex-1 text-center py-2 cursor-pointer transition-colors"
+          [class.bg-green-100]="form.get('type')?.value === 'income'"
+          [class.text-green-700]="form.get('type')?.value === 'income'"
+          [class.font-bold]="form.get('type')?.value === 'income'">
+          <input type="radio" formControlName="type" value="income" class="hidden">
+          Income
+        </label>
+        <label class="flex-1 text-center py-2 cursor-pointer transition-colors"
+          [class.bg-red-100]="form.get('type')?.value === 'expense'"
+          [class.text-red-700]="form.get('type')?.value === 'expense'"
+          [class.font-bold]="form.get('type')?.value === 'expense'">
+          <input type="radio" formControlName="type" value="expense" class="hidden">
+          Expense
+        </label>
+      </div>
+
+      <!-- Amount -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Amount</label>
+        <div class="relative">
+           <span class="absolute left-3 top-2 text-gray-500">$</span>
+           <input type="number" formControlName="amount" step="0.01" class="w-full pl-7 pr-3 py-2 border rounded-lg focus:ring-2 focus:outline-none"
+             [class.focus:ring-green-500]="form.get('type')?.value === 'income'"
+             [class.focus:ring-red-500]="form.get('type')?.value === 'expense'">
+        </div>
+      </div>
+
+      <!-- Date -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Date</label>
+        <input type="date" formControlName="date" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+      </div>
+
+      <!-- Item -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Item Name</label>
+        <input type="text" formControlName="item" placeholder="e.g. Salary, Coffee" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+      </div>
+
+      <!-- Category -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Category</label>
+        <input type="text" formControlName="category" list="categories" placeholder="e.g. Food, Transport" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+        <datalist id="categories">
+          <option value="Food"></option>
+          <option value="Transport"></option>
+          <option value="Shopping"></option>
+          <option value="Salary"></option>
+          <option value="Rent"></option>
+        </datalist>
+      </div>
+
+      <!-- Note -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">Note (Optional)</label>
+        <textarea formControlName="note" rows="2" class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none"></textarea>
+      </div>
+
+      <!-- Actions -->
+      <div class="flex justify-end gap-3 pt-4">
+        <button type="button" *ngIf="expense" (click)="onDelete()" class="px-4 py-2 text-red-600 hover:bg-red-50 rounded-lg">Delete</button>
+        <button type="button" (click)="close.emit()" class="px-4 py-2 text-gray-600 hover:bg-gray-100 rounded-lg">Cancel</button>
+        <button type="submit" [disabled]="form.invalid" 
+          class="px-6 py-2 text-white rounded-lg shadow-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          [class.bg-red-600]="form.get('type')?.value === 'income'"
+          [class.hover:bg-red-700]="form.get('type')?.value === 'income'"
+          [class.bg-green-600]="form.get('type')?.value === 'expense'"
+          [class.hover:bg-green-700]="form.get('type')?.value === 'expense'">
+          Save
+        </button>
+      </div>
+    </form>
+  </div>
+</div>

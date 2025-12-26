@@ -1,0 +1,117 @@
+<div class="min-h-screen bg-gray-100 font-sans pb-20">
+  <!-- Header -->
+  <header class="bg-white shadow-sm sticky top-0 z-10">
+    <div class="max-w-4xl mx-auto px-4 py-4 flex justify-between items-center">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 bg-blue-600 rounded-lg flex items-center justify-center text-white font-bold">
+          $
+        </div>
+        <h1 class="text-lg font-bold text-gray-800">Bank App</h1>
+      </div>
+      
+      <!-- User Switcher -->
+      <div class="bg-gray-100 p-1 rounded-lg flex text-sm font-medium">
+        <button (click)="switchUser('Shawn')" 
+          class="px-4 py-1.5 rounded-md transition-all"
+          [class.bg-white]="currentUser() === 'Shawn'"
+          [class.shadow-sm]="currentUser() === 'Shawn'"
+          [class.text-blue-600]="currentUser() === 'Shawn'"
+          [class.text-gray-500]="currentUser() !== 'Shawn'">
+          Shawn
+        </button>
+        <button (click)="switchUser('Ethan')" 
+          class="px-4 py-1.5 rounded-md transition-all"
+          [class.bg-white]="currentUser() === 'Ethan'"
+          [class.shadow-sm]="currentUser() === 'Ethan'"
+          [class.text-blue-600]="currentUser() === 'Ethan'"
+          [class.text-gray-500]="currentUser() !== 'Ethan'">
+          Ethan
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-4xl mx-auto px-4 py-6 space-y-6">
+    <!-- Loading Indicator -->
+    <div *ngIf="loading()" class="fixed top-0 left-0 w-full h-1 bg-blue-100 z-50 overflow-hidden">
+       <div class="h-full bg-blue-500 animate-progress"></div>
+    </div>
+
+    <!-- Dashboard Layout -->
+    <div class="grid md:grid-cols-2 gap-6">
+      
+      <!-- Left Panel: Summary -->
+      <div class="space-y-6">
+        <!-- Balance Card -->
+        <div class="bg-white rounded-2xl p-6 shadow-sm border border-gray-100 flex flex-col items-center justify-center text-center space-y-2">
+           <div class="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center text-3xl mb-2">
+             {{ currentUser() === 'Shawn' ? '👨‍💻' : '🧑‍🎨' }}
+           </div>
+           <h2 class="text-gray-500 font-medium">{{ currentUser() }}'s Wallet</h2>
+           <div class="text-4xl font-extrabold"
+             [class.text-green-600]="totalBalance() > 0"
+             [class.text-red-600]="totalBalance() < 0"
+             [class.text-gray-800]="totalBalance() === 0">
+             {{ totalBalance() | currency:'USD':'symbol':'1.0-0' }}
+           </div>
+           <p class="text-xs text-gray-400">Total Balance</p>
+        </div>
+      </div>
+
+      <!-- Right Panel: Recent Transactions -->
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
+          <h3 class="font-bold text-gray-700">Recent Transactions</h3>
+          <span class="text-xs text-gray-400">Last 5</span>
+        </div>
+        
+        <div class="divide-y divide-gray-100">
+          <div *ngFor="let item of recentTransactions()" class="p-4 hover:bg-gray-50 transition-colors flex justify-between items-center group">
+            <div class="flex items-center gap-4">
+              <div class="flex flex-col items-center justify-center w-12 h-12 rounded-full bg-gray-50 text-xl">
+                 <!-- Icon based on category could go here, using generic for now -->
+                 📄
+              </div>
+              <div>
+                <div class="font-bold text-gray-800">{{ item.item }}</div>
+                <div class="text-xs text-gray-500">{{ item.date | date:'mediumDate' }} • {{ item.category }}</div>
+                <div *ngIf="item.note" class="text-xs text-gray-400 italic truncate max-w-[150px]">{{ item.note }}</div>
+              </div>
+            </div>
+            
+            <div class="text-right">
+              <div class="font-bold text-lg"
+                [class.text-green-600]="item.amount > 0"
+                [class.text-red-600]="item.amount < 0">
+                {{ item.amount > 0 ? '+' : '' }}{{ item.amount | currency:'USD':'symbol':'1.0-2' }}
+              </div>
+              <button (click)="openEditDialog(item)" class="text-xs text-blue-500 hover:underline opacity-0 group-hover:opacity-100 transition-opacity">
+                Edit
+              </button>
+            </div>
+          </div>
+          
+          <div *ngIf="expenses().length === 0" class="p-8 text-center text-gray-400">
+            No transactions found.
+          </div>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <!-- FAB -->
+  <button (click)="openAddDialog()" class="fixed bottom-6 right-6 w-14 h-14 bg-blue-600 text-white rounded-full shadow-lg flex items-center justify-center hover:bg-blue-700 hover:scale-110 transition-all active:scale-95 z-40">
+    <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" class="w-8 h-8">
+      <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+    </svg>
+  </button>
+
+  <!-- Dialog -->
+  <app-transaction-dialog 
+    *ngIf="showDialog()" 
+    [expense]="selectedExpense()"
+    (save)="onSave($event)"
+    (delete)="onDelete()"
+    (close)="closeDialog()">
+  </app-transaction-dialog>
+</div>
