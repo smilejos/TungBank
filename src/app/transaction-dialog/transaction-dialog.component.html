@@ -67,6 +67,16 @@
         </datalist>
       </div>
 
+      <!-- Target/Source -->
+      <div>
+        <label class="block text-sm font-medium text-gray-700 mb-1">
+          {{ form.get('type')?.value === 'income' ? 'Income Source' : 'Payment Target' }}
+        </label>
+        <input type="text" formControlName="target" 
+          [placeholder]="form.get('type')?.value === 'income' ? 'e.g. Client X, Part-time Job' : 'e.g. Walmart, Landlord'"
+          class="w-full px-3 py-2 border rounded-lg focus:ring-2 focus:ring-blue-500 focus:outline-none">
+      </div>
+
       <!-- Note -->
       <div>
         <label class="block text-sm font-medium text-gray-700 mb-1">Note (Optional)</label>

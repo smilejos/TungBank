@@ -9,6 +9,7 @@ export interface ExpenseRecord {
   amount: number;
   category: string;
   note: string;
+  target?: string;
 }
 
 export type User = 'Shawn' | 'Ethan';
@@ -20,7 +21,7 @@ export class ApiService {
   private http = inject(HttpClient);
   // Using the direct URL. Note: The backend must be deployed as "Anyone" (Anonymous) 
   // for this to work in a browser without CORS issues on redirects.
-  private readonly API_URL = 'https://script.google.com/macros/s/AKfycbyYP_AfB_lzq8SMX_xn8AQKPR3SPC04zpFEbv1fWpH0yOklpW6qrygsB7bHYWQp-a9r/exec';
+  private readonly API_URL = 'https://script.google.com/macros/s/AKfycbyf62aN1n22Z9f39TgMA7sHzuTNY05VMLWYgBjS3KNNTDA-T7e0NBPJCxrAxye1rfHS/exec';
 
   getExpenses(sheetName: User): Observable<ExpenseRecord[]> {
     // Note: We do NOT set Content-Type for GET requests as it can trigger preflight

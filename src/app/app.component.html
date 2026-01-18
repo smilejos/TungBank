@@ -59,10 +59,10 @@
       </div>
 
       <!-- Right Panel: Recent Transactions -->
-      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden">
+      <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden flex flex-col">
         <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50/50">
           <h3 class="font-bold text-gray-700">Recent Transactions</h3>
-          <span class="text-xs text-gray-400">Last 5</span>
+          <span class="text-xs text-gray-400">{{ showAllHistory() ? 'All Records' : 'Last 5' }}</span>
         </div>
         
         <div class="divide-y divide-gray-100">
@@ -75,6 +75,9 @@
               <div>
                 <div class="font-bold text-gray-800">{{ item.item }}</div>
                 <div class="text-xs text-gray-500">{{ item.date | date:'mediumDate' }} • {{ item.category }}</div>
+                <div *ngIf="item.target" class="text-xs font-medium text-gray-600">
+                  {{ item.amount > 0 ? 'From' : 'To' }}: {{ item.target }}
+                </div>
                 <div *ngIf="item.note" class="text-xs text-gray-400 italic truncate max-w-[150px]">{{ item.note }}</div>
               </div>
             </div>
@@ -94,6 +97,13 @@
           <div *ngIf="expenses().length === 0" class="p-8 text-center text-gray-400">
             No transactions found.
           </div>
+        </div>
+
+        <!-- Footer Button -->
+        <div class="p-4 bg-gray-50 border-t border-gray-100 text-center" *ngIf="expenses().length > 5">
+          <button (click)="toggleHistory()" class="text-sm font-medium text-blue-600 hover:text-blue-800 transition-colors">
+              {{ showAllHistory() ? 'Show Less' : 'View All History' }}
+          </button>
         </div>
       </div>
     </div>

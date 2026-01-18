@@ -20,6 +20,7 @@ export class AppComponent {
   // Dialog State
   showDialog = signal<boolean>(false);
   selectedExpense = signal<ExpenseRecord | null>(null);
+  showAllHistory = signal<boolean>(false);
 
   constructor() {
     // Re-fetch when user changes
@@ -49,12 +50,17 @@ export class AppComponent {
 
   recentTransactions = computed(() => {
     // Sort by date descending
-    return [...this.expenses()]
-      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime())
-      .slice(0, 5);
+    const sorted = [...this.expenses()]
+      .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+    
+    return this.showAllHistory() ? sorted : sorted.slice(0, 5);
   });
 
   // Actions
+  toggleHistory() {
+    this.showAllHistory.update(v => !v);
+  }
+
   switchUser(user: User) {
     this.currentUser.set(user);
   }

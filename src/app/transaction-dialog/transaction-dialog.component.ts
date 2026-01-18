@@ -30,7 +30,8 @@ export class TransactionDialogComponent implements OnInit {
       amount: [absAmount, [Validators.required, Validators.min(0.01)]],
       type: [isIncome ? 'income' : 'expense', Validators.required],
       category: [this.expense?.category || 'General', Validators.required],
-      note: [this.expense?.note || '']
+      note: [this.expense?.note || ''],
+      target: [this.expense?.target || '']
     });
   }
 
@@ -44,7 +45,8 @@ export class TransactionDialogComponent implements OnInit {
         item: formVal.item,
         amount: finalAmount,
         category: formVal.category,
-        note: formVal.note
+        note: formVal.note,
+        target: formVal.target
       };
 
       if (this.expense) {
